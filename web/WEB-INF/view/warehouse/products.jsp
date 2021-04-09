@@ -12,7 +12,6 @@
     <tr>
         <th>Name</th>
         <th>Price</th>
-        <th>Group</th>
         <th>Count</th>
         <th>Add to bucket</th>
     </tr>
@@ -20,7 +19,6 @@
         <tr>
             <td>${pair.key.name}</td>
             <td>${pair.key.price}</td>
-            <td>${pair.key.group}</td>
             <td>${pair.value}</td>
             <td><a href="/bucket/add-product/${pair.key.id}">add</a></td>
         </tr>

@@ -1,27 +1,20 @@
 package com.musairov.shop.dao;
 
-import lombok.*;
-import org.jetbrains.annotations.NotNull;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 
 @Entity
 @Table(name = "customers")
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
-public class User implements UserDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.NONE)
-    private Long id;
+@Data
+public class User extends Identification implements UserDetails {
 
     @NotNull
     @Column(name = "login")
@@ -30,6 +23,12 @@ public class User implements UserDetails {
     @NotNull
     @Column(name = "password")
     private String password;
+
+    public User(Integer id, String login, String password) {
+        this.setId(id);
+        this.setLogin(login);
+        this.setPassword(password);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
