@@ -1,21 +1,34 @@
 package com.musairov.shop.dao;
 
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 
+@Entity
+@Table(name = "customers")
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private Long id;
+
+    @NotNull
+    @Column(name = "login")
     private String login;
+
+    @NotNull
+    @Column(name = "password")
     private String password;
 
     @Override

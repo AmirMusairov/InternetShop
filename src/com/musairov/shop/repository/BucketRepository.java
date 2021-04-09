@@ -27,17 +27,14 @@ public class BucketRepository implements Serializable {
 
     @Transactional
     protected Bucket getOrCreateBucket() {
-        Bucket bucket = null;
 
         User user = this.authService.getAuthUser();
 
-        if (Objects.nonNull(user)) {
-            bucket = getBucket(user);
+        Bucket bucket = getBucket(user);
 
-            if (Objects.isNull(bucket)) {
-                createBucket(user);
-                bucket = getBucket(user);
-            }
+        if (Objects.isNull(bucket)) {
+            createBucket(user);
+            bucket = getBucket(user);
         }
 
         return bucket;
