@@ -1,4 +1,4 @@
-use shop;
+use spring-shop;
 
 INSERT INTO shop.customers (id, login, password) VALUES (1, 'Amir', '$2a$10$3/EBD2KnR2m5hF3pNTehBe1bRhF/jnhIG.GDR0ErjRKVdZ2ov4RBq');
 
