@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Transactional
@@ -22,15 +21,15 @@ public class OrderRepository {
     private final RowMapper<Order> orderRowMapper = (rs, rowNums) -> new Order(
             rs.getInt("id"),
             rs.getDate("created_at").toLocalDate(),
-            UUID.fromString(rs.getString("user_id")),
+            rs.getLong("user_id"),
             rs.getBigDecimal("total"),
             rs.getBoolean("accepted")
     );
 
-    public boolean create(UUID userId, BigDecimal total, Boolean accepted) {
+    public boolean create(Long userId, BigDecimal total, Boolean accepted) {
         int rows = jdbcTemplate.update(
                 "insert into orders (user_id, created_at, total, accepted) values (?, ?, ?, ?)",
-                userId.toString(),
+                userId,
                 Date.valueOf(LocalDate.now()),
                 total,
                 accepted
@@ -59,7 +58,7 @@ public class OrderRepository {
         int rows = jdbcTemplate.update(
                 "update orders set accepted = true where id = ? and user_id = ?",
                 orderId,
-                user.getId().toString()
+                user.getId()
         );
 
         return rows != 0;

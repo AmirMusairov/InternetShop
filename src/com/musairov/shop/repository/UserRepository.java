@@ -8,7 +8,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 @Slf4j
 @Transactional
@@ -25,7 +30,7 @@ public class UserRepository {
             user = jdbcTemplate.queryForObject(
                     "select * from customers where login = ? and password = ?",
                     new Object[]{login, passwordEncoder.encode(password)},
-                    (rs, i) -> new User(UUID.fromString(rs.getString("id")), login, hash)
+                    (rs, i) -> new User(rs.getLong("id"), login, hash)
             );
         } catch (Exception e) {
             System.out.println("User not found");
@@ -36,9 +41,8 @@ public class UserRepository {
     public void create(String login, String password) {
         String hash = passwordEncoder.encode(password);
         try {
-            int rows = jdbcTemplate.update(
-                    "insert into customers (id, login, password) values (?, ?, ?)",
-                    UUID.randomUUID().toString(),
+            jdbcTemplate.update(
+                    "insert into customers (login, password) values (?, ?)",
                     login,
                     hash
             );
@@ -48,15 +52,24 @@ public class UserRepository {
     }
 
     public UserDetails getByLogin(String login) {
+        EntityManagerFactory factory = Persistence.createEntityManagerFactory("hibernate");
+        EntityManager em = factory.createEntityManager();
+        em.getTransaction().begin();
+
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(
-                    "select * from customers where login = ?",
-                    new Object[]{login},
-                    (rs, i) -> new User(UUID.fromString(rs.getString("id")), login, rs.getString("password"))
-            );
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<User> cq = cb.createQuery(User.class);
+            Root<User> userRoot = cq.from(User.class);
+            cq.select(userRoot);
+            cq.where(cb.equal(userRoot.get("login"), login));
+
+            user = em.createQuery(cq).getSingleResult();
+
+            em.getTransaction().commit();
         } catch (Exception e) {
             System.out.println("User by login  not found");
+            em.getTransaction().rollback();
         }
         return user;
     }
