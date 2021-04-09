@@ -1,0 +1,29 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<html>
+<head>
+    <title>Order History</title>
+</head>
+<body>
+<h1>Order History</h1>
+<p><a href="/main">menu</a></p>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Created at</th>
+        <th>Total</th>
+        <th>Accepted</th>
+    </tr>
+    <c:forEach var="order" items="${orders}">
+        <tr>
+            <td>${order.id}</td>
+            <td>${order.createdAt}</td>
+            <td>${order.total}</td>
+            <td>${order.accepted}</td>
+        </tr>
+    </c:forEach>
+</table>
+
+</body>
+</html>
