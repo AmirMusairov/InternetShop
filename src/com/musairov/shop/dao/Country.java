@@ -10,10 +10,7 @@ import java.util.List;
 @Table(name = "countries")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Country {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Country extends Identification {
 
     @Column(name = "name")
     private String name;
